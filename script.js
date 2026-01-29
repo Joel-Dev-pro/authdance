@@ -15,10 +15,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const navMenu = document.getElementById('navMenu');
     
     // Mobile menu toggle
-    if (navToggle) {
-        navToggle.addEventListener('click', function() {
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function(e) {
+            e.stopPropagation(); // Empêche la propagation du clic
             navToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
+            
+            // Empêche le scroll du body quand le menu est ouvert
+            if (navMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
         });
     }
     
@@ -29,15 +37,28 @@ document.addEventListener('DOMContentLoaded', function() {
             if (window.innerWidth <= 968) {
                 navToggle.classList.remove('active');
                 navMenu.classList.remove('active');
+                document.body.style.overflow = ''; // Rétablit le scroll
             }
         });
     });
     
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
-        if (!event.target.closest('.navbar') && navMenu.classList.contains('active')) {
+        const isClickInsideNav = navbar.contains(event.target);
+        
+        if (!isClickInsideNav && navMenu.classList.contains('active')) {
             navToggle.classList.remove('active');
             navMenu.classList.remove('active');
+            document.body.style.overflow = ''; // Rétablit le scroll
+        }
+    });
+    
+    // Close menu on window resize to desktop size
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 968 && navMenu.classList.contains('active')) {
+            navToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            document.body.style.overflow = '';
         }
     });
     
@@ -406,6 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === 'Escape' && navMenu.classList.contains('active')) {
                 navToggle.classList.remove('active');
                 navMenu.classList.remove('active');
+                document.body.style.overflow = '';
                 navToggle.focus();
             }
         });
@@ -416,9 +438,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // CONSOLE MESSAGE (Easter egg)
     // ===================================
     
-    console.log('%c🎭 AUTHENTIK DANCE', 'font-size: 24px; font-weight: bold; background: linear-gradient(135deg, #FF1493, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;');
+    console.log('%c AUTHENTIK DANCE', 'font-size: 24px; font-weight: bold; background: linear-gradient(135deg, #FF1493, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;');
     console.log('%cL\'authenticité du mouvement', 'font-size: 14px; color: #666;');
-    console.log('%cVous cherchez quelque chose ? Contactez-nous ! 💃', 'font-size: 12px; color: #FF1493;');
+    console.log('%cVous cherchez quelque chose ? Contactez-nous ! ', 'font-size: 12px; color: #FF1493;');
     
 });
 
